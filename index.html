@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zostel Banikhet Support Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto max-w-3xl p-4">
+        <div class="bg-white rounded-lg shadow-lg p-4">
+            <!-- Chat Header -->
+            <div class="flex items-center border-b pb-4 mb-4">
+                <img src="https://images.unsplash.com/photo-1572376313139-2d4a8399dc63?q=80&w=100&h=100&auto=format&fit=crop" 
+                     class="w-12 h-12 rounded-full" alt="Zostel Logo">
+                <div class="ml-4">
+                    <h1 class="text-xl font-bold">Zostel Banikhet Support</h1>
+                    <p class="text-sm text-gray-500">Customer Service</p>
+                </div>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div id="chatContainer" class="space-y-4 h-[500px] overflow-y-auto mb-4">
+                <!-- Messages will be added here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t pt-4">
+                <div class="flex gap-2">
+                    <textarea id="messageInput" 
+                              class="flex-1 p-2 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+                              placeholder="Type your message here..."
+                              rows="2"></textarea>
+                    <button onclick="sendMessage()" 
+                            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="bi bi-send"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isZobuTurn = true;
+        let questionCounter = 0;
+        const questions = [
+            "Hey! I'm planning a trip from Bangalore to Zostel Banikhet. What's the best way to reach?",
+            "What kind of rooms do you have available?",
+            "Do you have any private rooms with a view?",
+            "Can I make a booking for 7 people?",
+            "Is there Wi-Fi? And do you have a swimming pool?",
+            "We'll be bringing our 2-year-old with us, is that okay?",
+            "If I need to cancel a day before, will I get a full refund?",
+            "Are we allowed to cook or bring food inside?",
+            "What activities can we do there? Is there a bonfire?",
+            "Great! Can you block 2 beds for me?"
+        ];
+
+        function addMessage(message, isUser = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            
+            messageDiv.innerHTML = `
+                <div class="${isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} rounded-lg p-3 max-w-[80%]">
+                    <p class="text-sm">${message}</p>
+                </div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                if (isZobuTurn) {
+                    setTimeout(() => {
+                        if (questionCounter < questions.length) {
+                            addMessage(questions[questionCounter]);
+                            questionCounter++;
+                        }
+                    }, 1000);
+                }
+                
+                isZobuTurn = !isZobuTurn;
+            }
+        }
+
+        // Initial message
+        window.onload = () => {
+            addMessage(questions[0]);
+            questionCounter++;
+        };
+
+        // Allow sending message with Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
